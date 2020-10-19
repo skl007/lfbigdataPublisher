@@ -21,33 +21,12 @@ public class PublisherController {
     @Autowired
     PublisherService publisherService;
 
-    /*@GetMapping("realtime-total")
-    public String getTotal(@RequestParam("date") String date) {
-        Long dauTotal = publisherService.getDauTotal(date);
-        List<Map> totalList = new ArrayList<>();
-        Map dauMap = new HashMap();
-        dauMap.put("id", "tt");
-        dauMap.put("name", "测试");
-        dauMap.put("value", dauTotal);
-        totalList.add(dauMap);
-
-        Map newMidMap = new HashMap();
-        newMidMap.put("id", "new_mid");
-        newMidMap.put("name", "测试2");
-        newMidMap.put("value", 33333);
-        totalList.add(newMidMap);
-
-        return JSON.toJSONString(totalList);
-    }
-
-    @GetMapping("electronicFence-total")
-    public String getRealtimeHour(@RequestParam("date") String date) {
-        return null;
-    }*/
-
-    /*
-     * 查询某一时间范围，进入国庆任务的电子围栏的总报警人数（手机号去重）和总报警次数（手机号不去重）
-     **/
+    /**
+     * 提供API接口：查询某一时间范围，进入国庆任务的电子围栏的总报警人数（手机号去重）和总报警次数（手机号不去重）
+     * @param dateStart
+     * @param dateEnd
+     * @return
+     */
     @GetMapping("nationaltask-alarm-total")
     public String getAlarmTotalCount(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd) {
         Map intoElectronicFenceMap = publisherService.getNationalTaskCount(dateStart, dateEnd);
@@ -64,10 +43,13 @@ public class PublisherController {
         return JSON.toJSONString(model);
     }
 
+    /**
+     * 提供API接口：查询某一时间范围，国庆围栏任务，内部围栏(小围栏)人员设备信息
+     * @param dateStart
+     * @param dateEnd
+     * @return
+     */
 
-    /*
-     * 国庆任务围栏内部详单数据
-     * */
     @GetMapping("nationaltask-alarm-list-in")
     public String getNationaltaskListIn(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd) {
         List<Map> intoElectronicFenceMap = publisherService.getElectronicFenceGqrwIn(dateStart, dateEnd);
@@ -116,9 +98,13 @@ public class PublisherController {
         return JSON.toJSONString(totalList);
     }
 
-    /*
-     * 国庆任务围栏外部详单数据（大围栏）
-     * */
+
+    /**
+     * 提供API接口：查询某一时间范围，国庆围栏任务，外部围栏(大围栏)人员设备信息
+     * @param dateStart
+     * @param dateEnd
+     * @return
+     */
     @GetMapping("nationaltask-alarm-list-out")
     public String getNationaltaskListOut(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd) {
         List<Map> intoElectronicFenceMap = publisherService.getElectronicFenceGqrwOut(dateStart, dateEnd);
@@ -168,9 +154,13 @@ public class PublisherController {
         return JSON.toJSONString(totalList);
     }
 
-    /*
-     * 国庆任务地图展示：查询某一时间范围（同一手机号码只取最新一次的），进入国庆围栏内部和国庆围栏外围的list
-     * */
+
+    /**
+     * 提供API接口：国庆任务地图展示：围栏内部和围栏外部数据，且只要最新的一次报警：从未进过小围栏的和进大围栏时间较新的 + 即在大围栏里，也在小围栏里，小围栏里的时间是新的
+     * @param dateStart
+     * @param dateEnd
+     * @return
+     */
     @GetMapping("nationaltask-alarm-list-map")
     public String getNationaltaskListMap(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd) {
         List<Map> intoElectronicFenceMap = publisherService.getNationalTaskShowOnMap(dateStart, dateEnd);
@@ -205,96 +195,5 @@ public class PublisherController {
 
         return JSON.toJSONString(totalList);
     }
-
-   /* @GetMapping("into-electronicFence")
-    public String getRealTimElectronicFence(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd) {
-        List<Map> intoElectronicFenceMap = publisherService.getIntoElectronicFence(dateStart, dateEnd);
-        List<Map> totalList = new ArrayList<>();
-        Iterator<Map> iterator = intoElectronicFenceMap.iterator();
-
-        while (iterator.hasNext()) {
-            Map obj = iterator.next();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            //重新解析字符串，将时间类型改为字符串类型
-            String device_number = (String) obj.get("deviceNumber");
-            Date time = (Date) obj.get("time");
-            String imei = (String) obj.get("imei");
-            String imsi = (String) obj.get("imsi");
-            String lac = (String) obj.get("lac");
-            String ci = (String) obj.get("ci");
-            String longitude = (String) obj.get("longitude");
-            String latitude = (String) obj.get("latitude");
-            String prov_id = (String) obj.get("provId");
-            Date inTime = (Date) obj.get("inTime");
-            String data_source = (String) obj.get("data_source");
-            String city_id = (String) obj.get("cityId");
-            String area_id = (String) obj.get("areaId");
-
-            Map model = new HashMap();
-            model.put("device_number", device_number);
-            model.put("time", dateFormat.format(time));
-            model.put("imei", imei);
-            model.put("imsi", imsi);
-            model.put("lac", lac);
-            model.put("ci", ci);
-            model.put("longitude", longitude);
-            model.put("latitude", latitude);
-            model.put("prov_id", prov_id);
-            model.put("inTime", dateFormat.format(inTime));
-            model.put("data_source", data_source);
-            model.put("city_id", city_id);
-            model.put("area_id", area_id);
-
-            totalList.add(model);
-        }
-
-        return JSON.toJSONString(totalList);
-    }
-
-
-    @GetMapping("into-ef-people")
-    public String getRealTimEfPeople(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd, @RequestParam("deviceNumber") String deviceNumber) {
-        List<Map> intoElectronicFenceMap = publisherService.getIntoEfPeople(dateStart, dateEnd, deviceNumber);
-        List<Map> totalList = new ArrayList<>();
-        Iterator<Map> iterator = intoElectronicFenceMap.iterator();
-
-        while (iterator.hasNext()) {
-            Map obj = iterator.next();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            //重新解析字符串，将时间类型改为字符串类型
-            String device_number = (String) obj.get("deviceNumber");
-            Date time = (Date) obj.get("time");
-            String imei = (String) obj.get("imei");
-            String imsi = (String) obj.get("imsi");
-            String lac = (String) obj.get("lac");
-            String ci = (String) obj.get("ci");
-            String longitude = (String) obj.get("longitude");
-            String latitude = (String) obj.get("latitude");
-            String prov_id = (String) obj.get("provId");
-            Date inTime = (Date) obj.get("inTime");
-            String data_source = (String) obj.get("data_source");
-            String city_id = (String) obj.get("cityId");
-            String area_id = (String) obj.get("areaId");
-
-            Map model = new HashMap();
-            model.put("device_number", device_number);
-            model.put("time", dateFormat.format(time));
-            model.put("imei", imei);
-            model.put("imsi", imsi);
-            model.put("lac", lac);
-            model.put("ci", ci);
-            model.put("longitude", longitude);
-            model.put("latitude", latitude);
-            model.put("prov_id", prov_id);
-            model.put("inTime", dateFormat.format(inTime));
-            model.put("data_source", data_source);
-            model.put("city_id", city_id);
-            model.put("area_id", area_id);
-
-            totalList.add(model);
-        }
-
-        return JSON.toJSONString(totalList);
-    }*/
 
 }

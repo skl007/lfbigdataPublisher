@@ -17,29 +17,6 @@ public class PublisherServiceImpl implements PublisherService {
     DauMapper dauMapper;
 
     @Override
-    public Long getDauTotal(String date) {
-        return dauMapper.getDauTotal(date);
-    }
-
-    @Override
-    public List<Map> getDauHourCount(String date) {
-        List<Map> dauHourCountList = dauMapper.getDauHourCount(date);
-        return dauHourCountList;
-    }
-
-    @Override
-    public List<Map> getIntoElectronicFence(String dateStart, String dateEnd) {
-        List<Map> dauHourCountList = dauMapper.getIntoElectronicFence(dateStart,dateEnd);
-        return dauHourCountList;
-    }
-
-    @Override
-    public List<Map> getIntoEfPeople(String dateStart, String dateEnd, String deviceNumber) {
-        List<Map> dauHourCountList = dauMapper.getIntoEfPeople(dateStart,dateEnd,deviceNumber);
-        return dauHourCountList;
-    }
-
-    @Override
     public Map getNationalTaskCount(String dateStart, String dateEnd) {
         Map nationalTaskCount = dauMapper.getNationalTaskCount(dateStart, dateEnd);
 

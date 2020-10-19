@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.unicom.lfbigdata.publisher.mapper.DauMapper">
-    <select id="getDauTotal" resultType="java.lang.Long">
-        select count(*) from ods_electronic_fence
-        where time>=#{date}
-    </select>
-    <!--查询国庆任务的报警人数和人次-->
+
+    <!--查询某一时间范围，进入国庆任务的电子围栏的总报警人数（手机号去重）和总报警次数（手机号不去重）-->
     <select id="getNationalTaskCount" resultMap="alarmTotalCount">
         SELECT countDistinct(device_number)  alarm_totalcount_dis,count(*)  alarm_totalcount
         FROM ods_electronic_fence_gqrw_in
@@ -17,7 +14,7 @@
         <result column="alarm_totalcount" property="alarmTotalcount" ></result>
     </resultMap>
 
-    <!--国庆围栏任务，内部围栏人员设备信息-->
+    <!--查询某一时间范围，国庆围栏任务，内部围栏(小围栏)人员设备信息-->
     <select id="getElectronicFenceGqrwIn" resultMap="electronicFenceGqrwIn">
         select device_number,time,imei,imsi,lac,ci,longitude,latitude,prov_id,in_time,data_source,city_id,area_id,topic_name
         from ods_electronic_fence_gqrw_in
@@ -42,7 +39,7 @@
         <result column="topic_name" property="topicName" ></result>
     </resultMap>
 
-    <!--国庆围栏任务，外部围栏人员设备信息-->
+    <!--国庆围栏任务，外部围栏(大围栏)人员设备信息-->
     <select id="getElectronicFenceGqrwOut" resultMap="electronicFenceGqrwOut">
         select device_number,time,imei,imsi,lac,ci,longitude,latitude,prov_id,in_time,data_source,city_id,area_id,topic_name
         from ods_electronic_fence_gqrw_out
@@ -67,7 +64,7 @@
         <result column="topic_name" property="topicName" ></result>
     </resultMap>
 
-    <!--国庆任务地图展示：围栏内部和围栏外部数据，且只要最新的一次报警：从未进过小围栏的和进大围栏时间较新的 + 即在大围栏里，也在小围栏里，小围栏里的时间是新的-->
+    <!--国庆任务地图展示：围栏内部和围栏外部数据，且只要最新的一次报警：从未进过小围栏的和进大围栏时间较新的 + 即在大围栏里，也在小围栏里，小围栏里的时间是新的。0代表环，1代码进入小围栏-->
     <select id="getNationalTaskShowOnMap" resultMap="nationalTaskShowOnMap">
         select t1.device_number device_number,t1.time time,t1.longitude longitude,t1.latitude latitude,t1.in_time in_time,t1.topic_name topic_name,'0' fence_in_out
             from (
@@ -84,20 +81,20 @@
         ) t3 on t1.device_number = t3.device_number
         where t3.device_number ='' or t1.time>t3.time
         union all
-        select t3.device_number device_number,t3.time time,t3.longitude longitude,t3.latitude latitude,t3.in_time in_time,t3.topic_name topic_name,'1' fence_in_out
+        select t5.device_number device_number,t5.time time,t5.longitude longitude,t5.latitude latitude,t5.in_time in_time,t5.topic_name topic_name,'1' fence_in_out
         from (
         select device_number,time,longitude,latitude,in_time,topic_name
         from ods_electronic_fence_gqrw_out
         where in_time>#{dateStart} and in_time &lt; #{dateEnd}
         ORDER BY time desc LIMIT 1 BY device_number
-        ) t1
+        ) t4
         left join (
         select device_number,time,longitude,latitude,in_time,topic_name
         from ods_electronic_fence_gqrw_in
         where in_time>#{dateStart} and in_time &lt; #{dateEnd}
         ORDER BY time desc LIMIT 1 BY device_number
-        ) t3 on t1.device_number = t3.device_number
-        where t3.device_number !='' and t1.time&lt;=t3.time
+        ) t5 on t4.device_number = t5.device_number
+        where t5.device_number !='' and t4.time&lt;=t5.time
     </select>
 
     <resultMap id="nationalTaskShowOnMap" type="java.util.Map">
@@ -110,76 +107,5 @@
         <result column="fence_in_out" property="fenceInOut" ></result>
     </resultMap>
 
-
-
-    <!--详单去重，只要最新一次的-->
-    <select id="getIntoElectronicFence" resultMap="electronicFence">
-        select device_number,time,imei,imsi,lac,ci,longitude,latitude,prov_id,in_time,data_source,city_id,area_id
-        from ods_electronic_fence
-        where time>=#{dateStart} and time &lt; #{dateEnd}
-        ORDER BY time desc LIMIT 1 BY device_number
-    </select>
-
-    <resultMap id="electronicFence" type="java.util.Map">
-         <result column="device_number" property="deviceNumber" ></result>
-         <result column="time" property="time" ></result>
-         <result column="imei" property="imei" ></result>
-         <result column="imsi" property="imsi" ></result>
-         <result column="lac" property="lac" ></result>
-         <result column="ci" property="ci" ></result>
-         <result column="longitude" property="longitude" ></result>
-         <result column="latitude" property="latitude" ></result>
-         <result column="prov_id" property="provId" ></result>
-         <result column="in_time" property="inTime" ></result>
-         <result column="data_source" property="dataSource" ></result>
-         <result column="city_id" property="cityId" ></result>
-         <result column="area_id" property="areaId" ></result>
-    </resultMap>
-
-
-
-    <select id="getIntoEfPeople" resultMap="efPeople">
-        select device_number,time,imei,imsi,lac,ci,longitude,latitude,prov_id,in_time,data_source,city_id,area_id
-        from ods_electronic_fence
-        where time>=#{dateStart} and time &lt; #{dateEnd} and device_number=#{deviceNumber}
-        ORDER BY time desc LIMIT 1 BY device_number
-    </select>
-
-    <resultMap id="efPeople" type="java.util.Map">
-        <result column="device_number" property="deviceNumber" ></result>
-        <result column="time" property="time" ></result>
-        <result column="imei" property="imei" ></result>
-        <result column="imsi" property="imsi" ></result>
-        <result column="lac" property="lac" ></result>
-        <result column="ci" property="ci" ></result>
-        <result column="longitude" property="longitude" ></result>
-        <result column="latitude" property="latitude" ></result>
-        <result column="prov_id" property="provId" ></result>
-        <result column="in_time" property="inTime" ></result>
-        <result column="data_source" property="dataSource" ></result>
-        <result column="city_id" property="cityId" ></result>
-        <result column="area_id" property="areaId" ></result>
-    </resultMap>
-    <select id="getDauHourCount" resultMap="hourMap">
-        select device_number,time,imei,imsi,lac,ci,longitude,latitude,prov_id,in_time,data_source,city_id,area_id
-        from ods_electronic_fence
-        where time>=#{date}
-    </select>
-
-    <resultMap id="hourMap" type="java.util.Map">
-        <result column="device_number" property="deviceNumber" ></result>
-        <result column="time" property="time" ></result>
-        <result column="imei" property="imei" ></result>
-        <result column="imsi" property="imsi" ></result>
-        <result column="lac" property="lac" ></result>
-        <result column="ci" property="ci" ></result>
-        <result column="longitude" property="longitude" ></result>
-        <result column="latitude" property="latitude" ></result>
-        <result column="prov_id" property="provId" ></result>
-        <result column="in_time" property="inTime" ></result>
-        <result column="data_source" property="dataSource" ></result>
-        <result column="city_id" property="cityId" ></result>
-        <result column="area_id" property="areaId" ></result>
-    </resultMap>
 
 </mapper>
