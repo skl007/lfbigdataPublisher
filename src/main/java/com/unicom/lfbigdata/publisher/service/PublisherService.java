@@ -36,4 +36,13 @@ public interface PublisherService {
      * @return
      */
     public List<Map> getNationalTaskShowOnMap(String dateStart,String dateEnd);
+
+    /**
+     * 人员轨迹查询：查询某一时间范围，某一手机号，对应的人员轨迹信息(不去重)
+     * @param dateStart
+     * @param dateEnd
+     * @param deviceNumber
+     * @return
+     */
+    public List<Map> getPersonTrack(String dateStart,String dateEnd,String deviceNumber);
 }

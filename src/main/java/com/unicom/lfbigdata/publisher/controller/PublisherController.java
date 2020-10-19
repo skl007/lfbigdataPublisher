@@ -196,4 +196,69 @@ public class PublisherController {
         return JSON.toJSONString(totalList);
     }
 
+    @GetMapping("bigdata/person-track/total")
+    public String getTotalPersonTrack(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd,@RequestParam("deviceNumber") String deviceNumber){
+        List<Map> personTrack = publisherService.getPersonTrack(dateStart, dateEnd, deviceNumber);
+        ArrayList<Map> totalPersonTrack = new ArrayList<>();
+        Iterator<Map> iterator = personTrack.iterator();
+
+        while (iterator.hasNext()) {
+            Map obj = iterator.next();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //重新解析字符串，将时间类型改为字符串类型
+            String device_number = (String) obj.get("deviceNumber");
+            String lac = (String) obj.get("lac");
+            String ci = (String) obj.get("ci");
+            Date activeTime = (Date) obj.get("activeTime");
+            String topicName = (String) obj.get("topicName");
+            String city = (String) obj.get("city");
+            String baseStation = (String) obj.get("baseStation");
+            String lat = (String) obj.get("lat");
+            String lon = (String) obj.get("lon");
+            String lac_ci = (String) obj.get("lacCi");
+
+            Map model = new HashMap();
+            model.put("device_number", device_number);
+            model.put("lac", lac);
+            model.put("ci", ci);
+            model.put("active_time",dateFormat.format(activeTime));
+            model.put("topic_name", topicName);
+            model.put("city", city);
+            model.put("base_station", baseStation);
+            model.put("lat", lat);
+            model.put("lon", lon);
+            model.put("lac_ci", lac_ci);
+
+            totalPersonTrack.add(model);
+        }
+
+        return JSON.toJSONString(totalPersonTrack);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

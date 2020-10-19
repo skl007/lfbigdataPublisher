@@ -39,4 +39,10 @@ public class PublisherServiceImpl implements PublisherService {
         List<Map> nationalTaskShowOnMap = dauMapper.getNationalTaskShowOnMap(dateStart,dateEnd);
         return nationalTaskShowOnMap;
     }
+
+    @Override
+    public List<Map> getPersonTrack(String dateStart, String dateEnd, String deviceNumber) {
+        List<Map> personTrack = dauMapper.getPersonTrack(dateStart, dateEnd, deviceNumber);
+        return personTrack;
+    }
 }
