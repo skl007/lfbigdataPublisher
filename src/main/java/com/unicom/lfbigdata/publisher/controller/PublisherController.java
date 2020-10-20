@@ -196,6 +196,13 @@ public class PublisherController {
         return JSON.toJSONString(totalList);
     }
 
+    /**
+     * 人员轨迹接口：查询某一时间范围，某一手机号，对应的人员轨迹信息(不去重)
+     * @param dateStart
+     * @param dateEnd
+     * @param deviceNumber
+     * @return
+     */
     @GetMapping("bigdata/person-track/total")
     public String getTotalPersonTrack(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd,@RequestParam("deviceNumber") String deviceNumber){
         List<Map> personTrack = publisherService.getPersonTrack(dateStart, dateEnd, deviceNumber);
