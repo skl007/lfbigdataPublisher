@@ -13,6 +13,7 @@ import java.util.Map;
 @Service
 public class PublisherServiceImpl implements PublisherService {
 
+
     @Autowired
     DauMapper dauMapper;
 
@@ -44,5 +45,23 @@ public class PublisherServiceImpl implements PublisherService {
     public List<Map> getPersonTrack(String dateStart, String dateEnd, String deviceNumber) {
         List<Map> personTrack = dauMapper.getPersonTrack(dateStart, dateEnd, deviceNumber);
         return personTrack;
+    }
+
+    @Override
+    public List<Map> getBaseStation() {
+        List<Map> baseStation = dauMapper.getBaseStation();
+        return baseStation;
+    }
+
+    @Override
+    public List<Map> getFenceOnMapDistinct(String dateStart, String dateEnd) {
+        List<Map> fenceOnMapDistinct = dauMapper.getFenceOnMapDistinct(dateStart, dateEnd);
+        return fenceOnMapDistinct;
+    }
+
+    @Override
+    public List<Map> getFenceOnMapAll(String dateStart, String dateEnd) {
+        List<Map> fenceOnMapAll = dauMapper.getFenceOnMapAll(dateStart, dateEnd);
+        return fenceOnMapAll;
     }
 }

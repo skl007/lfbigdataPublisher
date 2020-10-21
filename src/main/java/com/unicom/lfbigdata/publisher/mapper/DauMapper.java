@@ -46,5 +46,25 @@ public interface DauMapper {
      */
     public List<Map> getPersonTrack(String dateStart,String dateEnd,String deviceNumber);
 
+    /**
+     * 2G 3G 4G基站数据全量导出
+     * @return
+     */
+    public List<Map> getBaseStation();
 
+    /**
+     * 利用人员轨迹模拟电子围栏：查询某一时间范围，围栏内部和围栏外部白名单所有人员的数据，且只要最新的一次报警(即去重)
+     * @param dateStart
+     * @param dateEnd
+     * @return
+     */
+    public List<Map> getFenceOnMapDistinct(String dateStart,String dateEnd);
+
+    /**
+     * 利用人员轨迹模拟电子围栏：查询某一时间范围，围栏内部和围栏外部白名单所有人员的数据(不去重)
+     * @param dateStart
+     * @param dateEnd
+     * @return
+     */
+    public List<Map> getFenceOnMapAll(String dateStart,String dateEnd);
 }

@@ -242,12 +242,128 @@ public class PublisherController {
         return JSON.toJSONString(totalPersonTrack);
     }
 
+    /**
+     * 2G 3G 4G基站数据导出
+     * @return
+     */
+    @GetMapping("bigdata/basestation/all")
+    public String getAllBaseStation(){
+        List<Map> baseStationList = publisherService.getBaseStation();
+        ArrayList<Map> totalPersonTrack = new ArrayList<>();
+        Iterator<Map> iterator = baseStationList.iterator();
+
+        while (iterator.hasNext()) {
+            Map obj = iterator.next();
+            //重新解析字符串，将时间类型改为字符串类型
+            String lac_ci = (String) obj.get("lacCi");
+            String city = (String) obj.get("city");
+            String base_station = (String) obj.get("baseStation");
+            String lac = (String) obj.get("lac");
+            String ci = (String) obj.get("ci");
+            String lat = (String) obj.get("lat");
+            String lon = (String) obj.get("lon");
 
 
+            Map model = new HashMap();
+            model.put("lac_ci", lac_ci);
+            model.put("city", city);
+            model.put("base_station", base_station);
+            model.put("lac", lac);
+            model.put("ci", ci);
+            model.put("lat", lat);
+            model.put("lon", lon);
 
+            totalPersonTrack.add(model);
+        }
 
+        return JSON.toJSONString(totalPersonTrack);
+    }
 
+    /**
+     * 利用人员轨迹模拟电子围栏接口：查询某一时间范围，围栏内部和围栏外部白名单所有人员的数据，且只要最新的一次报警(即去重)
+     * @param dateStart
+     * @param dateEnd
+     * @return
+     */
+    @GetMapping("bigdata/fence-on-map/distinct")
+    public String getFenceMapDistinct(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd){
+        List<Map> fenceOnMapDistinct = publisherService.getFenceOnMapDistinct(dateStart,dateEnd);
+        ArrayList<Map> totalList = new ArrayList<>();
+        Iterator<Map> iterator = fenceOnMapDistinct.iterator();
 
+        while (iterator.hasNext()) {
+            Map obj = iterator.next();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //重新解析字符串，将时间类型改为字符串类型
+            String device_number = (String) obj.get("deviceNumber");
+            String lac = (String) obj.get("lac");
+            String ci = (String) obj.get("ci");
+            Date activeTime = (Date) obj.get("activeTime");
+            String city = (String) obj.get("city");
+            String baseStation = (String) obj.get("baseStation");
+            String lat = (String) obj.get("lat");
+            String lon = (String) obj.get("lon");
+            String lac_ci = (String) obj.get("lacCi");
+
+            Map model = new HashMap();
+            model.put("device_number", device_number);
+            model.put("lac", lac);
+            model.put("ci", ci);
+            model.put("active_time",dateFormat.format(activeTime));
+            model.put("city", city);
+            model.put("base_station", baseStation);
+            model.put("lat", lat);
+            model.put("lon", lon);
+            model.put("lac_ci", lac_ci);
+
+            totalList.add(model);
+        }
+
+        return JSON.toJSONString(totalList);
+    }
+
+    /**
+     * 利用人员轨迹模拟电子围栏接口：查询某一时间范围，围栏内部和围栏外部白名单所有人员的数据(不去重)
+     * @param dateStart
+     * @param dateEnd
+     * @return
+     */
+    @GetMapping("bigdata/fence-on-map/all")
+    public String getFenceMapAll(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd){
+        List<Map> fenceOnMapAll = publisherService.getFenceOnMapAll(dateStart,dateEnd);
+        ArrayList<Map> totalList = new ArrayList<>();
+        Iterator<Map> iterator = fenceOnMapAll.iterator();
+
+        while (iterator.hasNext()) {
+            Map obj = iterator.next();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //重新解析字符串，将时间类型改为字符串类型
+            String device_number = (String) obj.get("deviceNumber");
+            String lac = (String) obj.get("lac");
+            String ci = (String) obj.get("ci");
+            Date activeTime = (Date) obj.get("activeTime");
+            String city = (String) obj.get("city");
+            String baseStation = (String) obj.get("baseStation");
+            String lat = (String) obj.get("lat");
+            String lon = (String) obj.get("lon");
+            String lac_ci = (String) obj.get("lacCi");
+
+            Map model = new HashMap();
+            model.put("device_number", device_number);
+            model.put("lac", lac);
+            model.put("ci", ci);
+            model.put("active_time",dateFormat.format(activeTime));
+            model.put("city", city);
+            model.put("base_station", baseStation);
+            model.put("lat", lat);
+            model.put("lon", lon);
+            model.put("lac_ci", lac_ci);
+
+            totalList.add(model);
+        }
+
+        return JSON.toJSONString(totalList);
+    }
 
 
 
