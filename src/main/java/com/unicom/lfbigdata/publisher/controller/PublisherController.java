@@ -217,9 +217,10 @@ public class PublisherController {
             String lac = (String) obj.get("lac");
             String ci = (String) obj.get("ci");
             Date activeTime = (Date) obj.get("activeTime");
-            String topicName = (String) obj.get("topicName");
-            String city = (String) obj.get("city");
-            String baseStation = (String) obj.get("baseStation");
+            String prov_desc = (String) obj.get("provDesc");
+            String area_desc = (String) obj.get("areaDesc");
+            String district_desc = (String) obj.get("districtDesc");
+            String base_station = (String) obj.get("baseStation");
             String lat = (String) obj.get("lat");
             String lon = (String) obj.get("lon");
             String lac_ci = (String) obj.get("lacCi");
@@ -229,9 +230,10 @@ public class PublisherController {
             model.put("lac", lac);
             model.put("ci", ci);
             model.put("active_time",dateFormat.format(activeTime));
-            model.put("topic_name", topicName);
-            model.put("city", city);
-            model.put("base_station", baseStation);
+            model.put("prov_desc", prov_desc);
+            model.put("area_desc", area_desc);
+            model.put("district_desc", district_desc);
+            model.put("base_station", base_station);
             model.put("lat", lat);
             model.put("lon", lon);
             model.put("lac_ci", lac_ci);
@@ -255,9 +257,11 @@ public class PublisherController {
         while (iterator.hasNext()) {
             Map obj = iterator.next();
             //重新解析字符串，将时间类型改为字符串类型
-            String lac_ci = (String) obj.get("lacCi");
-            String city = (String) obj.get("city");
-            String base_station = (String) obj.get("baseStation");
+            String lacCi = (String) obj.get("lacCi");
+            String provDesc = (String) obj.get("provDesc");
+            String areaDesc = (String) obj.get("areaDesc");
+            String districtDesc = (String) obj.get("districtDesc");
+            String baseStation = (String) obj.get("baseStation");
             String lac = (String) obj.get("lac");
             String ci = (String) obj.get("ci");
             String lat = (String) obj.get("lat");
@@ -265,9 +269,11 @@ public class PublisherController {
 
 
             Map model = new HashMap();
-            model.put("lac_ci", lac_ci);
-            model.put("city", city);
-            model.put("base_station", base_station);
+            model.put("lac_ci", lacCi);
+            model.put("prov_desc", provDesc);
+            model.put("area_desc", areaDesc);
+            model.put("district_desc", districtDesc);
+            model.put("base_station", baseStation);
             model.put("lac", lac);
             model.put("ci", ci);
             model.put("lat", lat);
@@ -299,7 +305,9 @@ public class PublisherController {
             String lac = (String) obj.get("lac");
             String ci = (String) obj.get("ci");
             Date activeTime = (Date) obj.get("activeTime");
-            String city = (String) obj.get("city");
+            String provDesc = (String) obj.get("provDesc");
+            String areaDesc = (String) obj.get("areaDesc");
+            String districtDesc = (String) obj.get("districtDesc");
             String baseStation = (String) obj.get("baseStation");
             String lat = (String) obj.get("lat");
             String lon = (String) obj.get("lon");
@@ -310,7 +318,9 @@ public class PublisherController {
             model.put("lac", lac);
             model.put("ci", ci);
             model.put("active_time",dateFormat.format(activeTime));
-            model.put("city", city);
+            model.put("prov_desc", provDesc);
+            model.put("area_desc", areaDesc);
+            model.put("district_desc", districtDesc);
             model.put("base_station", baseStation);
             model.put("lat", lat);
             model.put("lon", lon);
@@ -342,7 +352,9 @@ public class PublisherController {
             String lac = (String) obj.get("lac");
             String ci = (String) obj.get("ci");
             Date activeTime = (Date) obj.get("activeTime");
-            String city = (String) obj.get("city");
+            String provDesc = (String) obj.get("provDesc");
+            String areaDesc = (String) obj.get("areaDesc");
+            String districtDesc = (String) obj.get("districtDesc");
             String baseStation = (String) obj.get("baseStation");
             String lat = (String) obj.get("lat");
             String lon = (String) obj.get("lon");
@@ -353,7 +365,9 @@ public class PublisherController {
             model.put("lac", lac);
             model.put("ci", ci);
             model.put("active_time",dateFormat.format(activeTime));
-            model.put("city", city);
+            model.put("prov_desc", provDesc);
+            model.put("area_desc", areaDesc);
+            model.put("district_desc", districtDesc);
             model.put("base_station", baseStation);
             model.put("lat", lat);
             model.put("lon", lon);

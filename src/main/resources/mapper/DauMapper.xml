@@ -109,26 +109,15 @@
 
     <!--人员轨迹查询：查询某一时间范围，某一手机号，对应的人员轨迹信息(不去重)。注：由于数据质量问题，group by 进行垃圾数据去重-->
     <select id="getPersonTrack" resultMap="personTrack">
-        select device_number,lac,ci,active_time,topic_name,city,base_station,lat,lon,lac_ci
+        select t1.device_number device_number,t1.lac lac,t1.ci ci,t1.active_time active_time,t2.prov_desc prov_desc,t2.area_desc area_desc,t2.district_desc district_desc,t2.base_station base_station,t2.lat lat,t2.lon lon,t2.lac_ci lac_ci
         from (
-            select t1.device_number,t1.lac,t1.ci,t1.active_time,t1.topic_name,t2.city,t2.base_station,t2.lat,t2.lon,t2.lac_ci
-            from (
-                SELECT device_number,lac,ci,active_time,topic_name
-                FROM ods_unicom_person_track
-                WHERE active_time >#{dateStart} and active_time&lt;#{dateEnd} and device_number =#{deviceNumber}
-                group by device_number,lac,ci,active_time,topic_name) t1
-            left join ods_base_station_2g3g t2 on t1.ci=t2.ci and t1.lac=t2.lac
-            where t2.lat != ''
-            union all
-            select t3.device_number,t4.lac,t3.ci,t3.active_time,t3.topic_name,t4.city,t4.base_station,t4.lat,t4.lon,t4.lac_ci
-            from (
-                select device_number,lac,ci,active_time,topic_name
-                from ods_unicom_person_track
-                where active_time >#{dateStart} and active_time&lt;#{dateEnd} and device_number =#{deviceNumber}
-                group by device_number,lac,ci,active_time,topic_name) t3
-            left join ods_base_station_4g t4 on t3.ci=t4.ci
-            where t4.lat != '') t5
-        order by t5.active_time asc;
+            SELECT device_number,lac,ci,active_time
+            FROM ods_unicom_person_track
+            WHERE active_time >#{dateStart} and active_time&lt;#{dateEnd} and device_number =#{deviceNumber}
+            group by device_number,lac,ci,active_time) t1
+        left join ods_base_station_wide t2 on t1.ci=t2.ci and t1.lac=t2.lac
+        where t2.lat != ''
+        order by t1.active_time asc
     </select>
 
     <resultMap id="personTrack" type="java.util.Map">
@@ -136,8 +125,9 @@
         <result column="lac" property="lac" ></result>
         <result column="ci" property="ci" ></result>
         <result column="active_time" property="activeTime" ></result>
-        <result column="topic_name" property="topicName" ></result>
-        <result column="city" property="city" ></result>
+        <result column="prov_desc" property="provDesc" ></result>
+        <result column="area_desc" property="areaDesc" ></result>
+        <result column="district_desc" property="districtDesc" ></result>
         <result column="base_station" property="baseStation" ></result>
         <result column="lat" property="lat" ></result>
         <result column="lon" property="lon" ></result>
@@ -146,16 +136,15 @@
 
     <!--2G 3G 4G基站数据导出-->
     <select id="getBaseStation" resultMap="baseStation">
-        select lac_ci,city,base_station,lac,ci,lat,lon
-        from ods_base_station_2g3g
-        union all
-        select lac_ci,city,base_station,lac,ci,lat,lon
-        from ods_base_station_4g
+        select lac_ci,prov_desc,area_desc,district_desc,base_station,lac,ci,lat,lon
+        from  ods_base_station_wide
     </select>
 
     <resultMap id="baseStation" type="java.util.Map">
         <result column="lac_ci" property="lacCi" ></result>
-        <result column="city" property="city" ></result>
+        <result column="prov_desc" property="provDesc" ></result>
+        <result column="area_desc" property="areaDesc" ></result>
+        <result column="district_desc" property="districtDesc" ></result>
         <result column="base_station" property="baseStation" ></result>
         <result column="lac" property="lac" ></result>
         <result column="ci" property="ci" ></result>
@@ -165,30 +154,14 @@
 
     <!--利用人员轨迹模拟电子围栏：查询某一时间范围，围栏内部和围栏外部白名单所有人员的数据，且只要最新的一次报警(即去重)-->
     <select id="getFenceOnMapDistinct" resultMap="fenceOnMapDistinct">
-        select device_number,lac,ci,active_time,city,base_station,lat,lon,lac_ci
+        select t1.device_number,t1.lac,t1.ci,t1.active_time,t2.prov_desc,t2.area_desc,t2.district_desc,t2.base_station,t2.lat,t2.lon,t2.lac_ci
         from (
-            select t1.device_number,t1.lac,t1.ci,t1.active_time,t2.city,t2.base_station,t2.lat,t2.lon,t2.lac_ci
-            from (
             SELECT device_number,lac,ci,active_time
             FROM ods_unicom_person_track
             WHERE active_time >#{dateStart} and active_time&lt;#{dateEnd}
             order by active_time desc limit 1 by device_number) t1
-            left join ods_base_station_2g3g t2
-            on t1.ci=t2.ci and t1.lac=t2.lac
-            where t2.lat != ''
-
-            union all
-
-            select t3.device_number,t4.lac,t3.ci,t3.active_time,t4.city,t4.base_station,t4.lat,t4.lon,t4.lac_ci
-            from (
-            select device_number,lac,ci,active_time
-            from ods_unicom_person_track
-            where active_time >#{dateStart} and active_time&lt;#{dateEnd}
-            order by active_time desc limit 1 by device_number) t3
-            left join ods_base_station_4g t4
-            on t3.ci=t4.ci
-            where t4.lat != '') t5
-        order by t5.active_time asc;
+        left join ods_base_station_wide t2  on t1.ci=t2.ci and t1.lac=t2.lac
+        where t2.lat != '';
     </select>
 
     <resultMap id="fenceOnMapDistinct" type="java.util.Map">
@@ -196,7 +169,9 @@
         <result column="lac" property="lac" ></result>
         <result column="ci" property="ci" ></result>
         <result column="active_time" property="activeTime" ></result>
-        <result column="city" property="city" ></result>
+        <result column="prov_desc" property="provDesc" ></result>
+        <result column="area_desc" property="areaDesc" ></result>
+        <result column="district_desc" property="districtDesc" ></result>
         <result column="base_station" property="baseStation" ></result>
         <result column="lat" property="lat" ></result>
         <result column="lon" property="lon" ></result>
@@ -205,30 +180,15 @@
 
     <!--利用人员轨迹模拟电子围栏：查询某一时间范围，围栏内部和围栏外部白名单所有人员的数据(不去重).注：由于数据质量问题，group by 进行垃圾数据去重-->
     <select id="getFenceOnMapAll" resultMap="fenceOnMapAll">
-        select device_number,lac,ci,active_time,city,base_station,lat,lon,lac_ci
+        select t1.device_number,t1.lac,t1.ci,t1.active_time,t2.prov_desc,t2.area_desc,t2.district_desc,t2.base_station,t2.lat,t2.lon,t2.lac_ci
         from (
-            select t1.device_number,t1.lac,t1.ci,t1.active_time,t2.city,t2.base_station,t2.lat,t2.lon,t2.lac_ci
-            from (
             SELECT device_number,lac,ci,active_time
             FROM ods_unicom_person_track
             WHERE active_time >#{dateStart} and active_time&lt;#{dateEnd}
             group by device_number,lac,ci,active_time) t1
-            left join ods_base_station_2g3g t2
-            on t1.ci=t2.ci and t1.lac=t2.lac
-            where t2.lat != ''
-
-            union all
-
-            select t3.device_number,t4.lac,t3.ci,t3.active_time,t4.city,t4.base_station,t4.lat,t4.lon,t4.lac_ci
-            from (
-            select device_number,lac,ci,active_time
-            from ods_unicom_person_track
-            where active_time >#{dateStart} and active_time&lt;#{dateEnd}
-             group by device_number,lac,ci,active_time) t3
-            left join ods_base_station_4g t4
-            on t3.ci=t4.ci
-            where t4.lat != '') t5
-        order by t5.device_number,t5.active_time asc;
+        left join ods_base_station_wide t2 on t1.ci=t2.ci and t1.lac=t2.lac
+        where t2.lat != ''
+        order by t1.device_number,t1.active_time asc
     </select>
 
     <resultMap id="fenceOnMapAll" type="java.util.Map">
@@ -236,7 +196,9 @@
         <result column="lac" property="lac" ></result>
         <result column="ci" property="ci" ></result>
         <result column="active_time" property="activeTime" ></result>
-        <result column="city" property="city" ></result>
+        <result column="prov_desc" property="provDesc" ></result>
+        <result column="area_desc" property="areaDesc" ></result>
+        <result column="district_desc" property="districtDesc" ></result>
         <result column="base_station" property="baseStation" ></result>
         <result column="lat" property="lat" ></result>
         <result column="lon" property="lon" ></result>
