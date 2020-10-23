@@ -305,6 +305,7 @@ public class PublisherController {
             String lac = (String) obj.get("lac");
             String ci = (String) obj.get("ci");
             Date activeTime = (Date) obj.get("activeTime");
+            String insertTimeCH = (String) obj.get("insertTimeCH");
             String provDesc = (String) obj.get("provDesc");
             String areaDesc = (String) obj.get("areaDesc");
             String districtDesc = (String) obj.get("districtDesc");
@@ -317,6 +318,7 @@ public class PublisherController {
             model.put("device_number", device_number);
             model.put("lac", lac);
             model.put("ci", ci);
+            model.put("insert_time_ch", insertTimeCH);
             model.put("active_time",dateFormat.format(activeTime));
             model.put("prov_desc", provDesc);
             model.put("area_desc", areaDesc);
@@ -352,6 +354,7 @@ public class PublisherController {
             String lac = (String) obj.get("lac");
             String ci = (String) obj.get("ci");
             Date activeTime = (Date) obj.get("activeTime");
+            String insertTimeCH = (String) obj.get("insertTimeCH");
             String provDesc = (String) obj.get("provDesc");
             String areaDesc = (String) obj.get("areaDesc");
             String districtDesc = (String) obj.get("districtDesc");
@@ -364,6 +367,7 @@ public class PublisherController {
             model.put("device_number", device_number);
             model.put("lac", lac);
             model.put("ci", ci);
+            model.put("insert_time_ch", insertTimeCH);
             model.put("active_time",dateFormat.format(activeTime));
             model.put("prov_desc", provDesc);
             model.put("area_desc", areaDesc);
@@ -372,6 +376,7 @@ public class PublisherController {
             model.put("lat", lat);
             model.put("lon", lon);
             model.put("lac_ci", lac_ci);
+
 
             totalList.add(model);
         }
