@@ -266,6 +266,7 @@ public class PublisherController {
             String ci = (String) obj.get("ci");
             String lat = (String) obj.get("lat");
             String lon = (String) obj.get("lon");
+            String lacCiType = (String) obj.get("lacCiType");
 
 
             Map model = new HashMap();
@@ -278,6 +279,7 @@ public class PublisherController {
             model.put("ci", ci);
             model.put("lat", lat);
             model.put("lon", lon);
+            model.put("lac_ci_type", lacCiType);
 
             totalPersonTrack.add(model);
         }

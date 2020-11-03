@@ -158,8 +158,8 @@
 
     <!--2G 3G 4G基站数据导出-->
     <select id="getBaseStation" resultMap="baseStation">
-        select lac_ci,prov_desc,area_desc,district_desc,base_station,lac,ci,lat,lon
-        from  ods_base_station_wide;
+        select lac_ci,prov_desc,area_desc,district_desc,base_station,lac,ci,lat,lon,lac_ci_type
+        from  ods_base_station_wide
     </select>
 
     <resultMap id="baseStation" type="java.util.Map">
@@ -172,6 +172,7 @@
         <result column="ci" property="ci" ></result>
         <result column="lat" property="lat" ></result>
         <result column="lon" property="lon" ></result>
+        <result column="lac_ci_type" property="lacCiType" ></result>
     </resultMap>
 
     <!--利用人员轨迹模拟电子围栏：查询某一时间范围，围栏内部和围栏外部白名单所有人员的数据，且只要最新的一次报警(即去重)-->
