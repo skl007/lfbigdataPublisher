@@ -48,6 +48,12 @@ public class PublisherServiceImpl implements PublisherService {
     }
 
     @Override
+    public List<Map> getUnicomHeaderPersonTrack(String dateStart, String dateEnd, String deviceNumber) {
+        List<Map> personTrack = dauMapper.getUnicomHeaderPersonTrack(dateStart, dateEnd, deviceNumber);
+        return personTrack;
+    }
+
+    @Override
     public List<Map> getBaseStation() {
         List<Map> baseStation = dauMapper.getBaseStation();
         return baseStation;

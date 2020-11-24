@@ -38,7 +38,7 @@ public interface DauMapper {
     public List<Map> getNationalTaskShowOnMap(String dateStart,String dateEnd);
 
     /**
-     * 查询某一时间范围，某一手机号，对应的人员轨迹信息(不去重)
+     * 人员轨迹：查询某一时间范围，某一手机号，对应的人员轨迹信息(不去重)
      * @param dateStart
      * @param dateEnd
      * @param deviceNumber
@@ -46,6 +46,14 @@ public interface DauMapper {
      */
     public List<Map> getPersonTrack(String dateStart,String dateEnd,String deviceNumber);
 
+    /**
+     * 联通总部数据支撑的人员轨迹：查询某一时间范围，某一手机号，对应的人员轨迹信息(不去重)
+     * @param dateStart
+     * @param dateEnd
+     * @param deviceNumber
+     * @return
+     */
+    public List<Map> getUnicomHeaderPersonTrack(String dateStart,String dateEnd,String deviceNumber);
     /**
      * 2G 3G 4G基站数据全量导出
      * @return
