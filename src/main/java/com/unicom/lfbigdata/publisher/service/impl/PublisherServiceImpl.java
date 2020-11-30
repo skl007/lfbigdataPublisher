@@ -66,8 +66,20 @@ public class PublisherServiceImpl implements PublisherService {
     }
 
     @Override
+    public List<Map> getUnicomHeaderFenceMapDistinct(String dateStart, String dateEnd) {
+        List<Map> fenceOnMapDistinct = dauMapper.getUnicomHeaderFenceMapDistinct(dateStart, dateEnd);
+        return fenceOnMapDistinct;
+    }
+
+    @Override
     public List<Map> getFenceOnMapAll(String dateStart, String dateEnd) {
         List<Map> fenceOnMapAll = dauMapper.getFenceOnMapAll(dateStart, dateEnd);
+        return fenceOnMapAll;
+    }
+
+    @Override
+    public List<Map> getUnicomHeaderFenceOnMapAll(String dateStart, String dateEnd) {
+        List<Map> fenceOnMapAll = dauMapper.getUnicomHeaderFenceOnMapAll(dateStart, dateEnd);
         return fenceOnMapAll;
     }
 }

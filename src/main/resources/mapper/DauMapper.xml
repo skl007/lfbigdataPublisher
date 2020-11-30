@@ -184,8 +184,6 @@
             select lac,ci,prov_desc,area_desc,district_desc,base_station,lat,lon,lac_ci
             from ods_base_station_wide
             where length(ci)>=8 ) t2 on t1.ci=t2.ci
-
-
             where t2.lat != ''
         ) t5
         order by time
@@ -267,6 +265,49 @@
         <result column="lac_ci" property="lacCi" ></result>
     </resultMap>
 
+    <!--联通总部数据支撑的利用人员轨迹模拟电子围栏：查询某一时间范围，围栏内部和围栏外部白名单所有人员的数据，且只要最新的一次报警(即去重)-->
+    <select id="getUnicomHeaderFenceMapDistinct" resultMap="unicomHeaderFenceOnMapDistinct">
+        select t1.device_number,t1.lac,t1.ci,t1.time,t2.prov_desc,t2.area_desc,t2.district_desc,t2.base_station,t2.lat,t2.lon,t2.lac_ci
+        from (
+            SELECT device_number,lac,ci,time
+            FROM ods_unicompl_person_track
+            WHERE time >#{dateStart} and time&lt;#{dateEnd}
+            order by time desc limit 1 by device_number) t1
+        left join (
+            select lac,ci,prov_desc,area_desc,district_desc,base_station,lat,lon,lac_ci
+            from ods_base_station_wide
+            where length(ci)&lt;8 ) t2 on t1.ci=t2.ci and t1.lac=t2.lac
+        where t2.lat != ''
+        union all
+        select t1.device_number,t1.lac,t1.ci,t1.time,t2.prov_desc,t2.area_desc,t2.district_desc,t2.base_station,t2.lat,t2.lon,t2.lac_ci
+            from (
+            SELECT device_number,lac,ci,time
+            FROM ods_unicompl_person_track
+            WHERE time >#{dateStart} and time&lt;#{dateEnd}
+            order by time desc limit 1 by device_number) t1
+        left join (
+            select lac,ci,prov_desc,area_desc,district_desc,base_station,lat,lon,lac_ci
+            from ods_base_station_wide
+            where length(ci)>=8 ) t2 on t1.ci=t2.ci
+        where t2.lat != ''
+    </select>
+
+    <resultMap id="unicomHeaderFenceOnMapDistinct" type="java.util.Map">
+        <result column="device_number" property="deviceNumber" ></result>
+        <result column="lac" property="lac" ></result>
+        <result column="ci" property="ci" ></result>
+        <result column="time" property="activeTime" ></result>
+        <result column="insert_time_ch" property="insertTimeCH" ></result>
+        <result column="prov_desc" property="provDesc" ></result>
+        <result column="area_desc" property="areaDesc" ></result>
+        <result column="district_desc" property="districtDesc" ></result>
+        <result column="base_station" property="baseStation" ></result>
+        <result column="lat" property="lat" ></result>
+        <result column="lon" property="lon" ></result>
+        <result column="lac_ci" property="lacCi" ></result>
+    </resultMap>
+
+
     <!--利用人员轨迹模拟电子围栏：查询某一时间范围，围栏内部和围栏外部白名单所有人员的数据(不去重).注：由于数据质量问题，group by 进行垃圾数据去重-->
     <select id="getFenceOnMapAll" resultMap="fenceOnMapAll">
         select device_number,lac,ci,active_time,insert_time_ch,prov_desc,area_desc,district_desc,base_station,lat,lon,lac_ci
@@ -314,4 +355,54 @@
         <result column="lon" property="lon" ></result>
         <result column="lac_ci" property="lacCi" ></result>
     </resultMap>
+
+    <!--联通总部数据支撑的利用人员轨迹模拟电子围栏：查询某一时间范围，围栏内部和围栏外部白名单所有人员的数据(不去重).注：由于数据质量问题，group by 进行垃圾数据去重-->
+    <select id="getUnicomHeaderFenceOnMapAll" resultMap="unicomHeaderFenceOnMapAll">
+        select device_number,lac,ci,time,insert_time_ch,prov_desc,area_desc,district_desc,base_station,lat,lon,lac_ci
+        from (
+
+        select t1.device_number,t1.lac,t1.ci,t1.time,t1.insert_time_ch,t2.prov_desc,t2.area_desc,t2.district_desc,t2.base_station,t2.lat,t2.lon,t2.lac_ci
+        from (
+        SELECT device_number,lac,ci,time,insert_time_ch
+        FROM ods_unicompl_person_track
+        WHERE insert_time_ch >#{dateStart} and insert_time_ch&lt;#{dateEnd}
+        ) t1
+        left join (
+        select lac,ci,prov_desc,area_desc,district_desc,base_station,lat,lon,lac_ci
+        from ods_base_station_wide
+        where length(ci)&lt;8 ) t2 on t1.ci=t2.ci and t1.lac=t2.lac
+        where t2.lat != ''
+
+        union all
+
+        select t1.device_number,t1.lac,t1.ci,t1.time,t1.insert_time_ch,t2.prov_desc,t2.area_desc,t2.district_desc,t2.base_station,t2.lat,t2.lon,t2.lac_ci
+        from (
+        SELECT device_number,lac,ci,time,insert_time_ch
+        FROM ods_unicompl_person_track
+        WHERE insert_time_ch >#{dateStart} and insert_time_ch&lt;#{dateEnd}
+        ) t1
+        left join (
+        select lac,ci,prov_desc,area_desc,district_desc,base_station,lat,lon,lac_ci
+        from ods_base_station_wide
+        where length(ci)>=8 ) t2 on t1.ci=t2.ci
+        where t2.lat != ''
+        ) t5
+        order by device_number,time asc
+    </select>
+
+    <resultMap id="unicomHeaderFenceOnMapAll" type="java.util.Map">
+        <result column="device_number" property="deviceNumber" ></result>
+        <result column="lac" property="lac" ></result>
+        <result column="ci" property="ci" ></result>
+        <result column="time" property="activeTime" ></result>
+        <result column="insert_time_ch" property="insertTimeCH" ></result>
+        <result column="prov_desc" property="provDesc" ></result>
+        <result column="area_desc" property="areaDesc" ></result>
+        <result column="district_desc" property="districtDesc" ></result>
+        <result column="base_station" property="baseStation" ></result>
+        <result column="lat" property="lat" ></result>
+        <result column="lon" property="lon" ></result>
+        <result column="lac_ci" property="lacCi" ></result>
+    </resultMap>
+
 </mapper>
