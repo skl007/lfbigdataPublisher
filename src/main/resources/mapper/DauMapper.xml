@@ -362,7 +362,7 @@
 
     <!--联通总部数据支撑的利用人员轨迹模拟电子围栏：查询某一时间范围，围栏内部和围栏外部白名单所有人员的数据(不去重).注：由于数据质量问题，group by 进行垃圾数据去重-->
     <select id="getUnicomHeaderFenceOnMapAll" resultMap="unicomHeaderFenceOnMapAll">
-        select device_number,lac,ci,active_time,insert_time_ch,prov_desc,area_desc,district_desc,base_station,lat,lon,lac_ci
+        select device_number,lac,ci,time,insert_time_ch,prov_desc,area_desc,district_desc,base_station,lat,lon,lac_ci
         from
         (select device_number,lac,ci,time,insert_time_ch,prov_desc,area_desc,district_desc,base_station,lat,lon,lac_ci
         from (
