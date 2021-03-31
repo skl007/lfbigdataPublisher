@@ -70,8 +70,12 @@ public class PublichserPersonTrack {
      * @return
      */
     @GetMapping("bigdata/unicom-header/fence-on-map/distinct")
-    public String getUnicomHeaderFenceMapDistinct(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd){
-        List<Map> fenceOnMapDistinct = publisherService.getUnicomHeaderFenceMapDistinct(dateStart,dateEnd);
+    public String getUnicomHeaderFenceMapDistinct(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd, @RequestParam("page") Integer page){
+        //分页处理
+        Integer pageIndex = (page - 1) * 1000;
+        Integer pageSize = 1000;
+
+        List<Map> fenceOnMapDistinct = publisherService.getUnicomHeaderFenceMapDistinct(dateStart,dateEnd,pageIndex,pageSize);
         ArrayList<Map> totalList = new ArrayList<>();
         Iterator<Map> iterator = fenceOnMapDistinct.iterator();
 
@@ -121,8 +125,12 @@ public class PublichserPersonTrack {
      * @return
      */
     @GetMapping("bigdata/unicom-header/fence-on-map/all")
-    public String getUnicomHeaderFenceMapAll(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd){
-        List<Map> fenceOnMapAll = publisherService.getUnicomHeaderFenceOnMapAll(dateStart,dateEnd);
+    public String getUnicomHeaderFenceMapAll(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd, @RequestParam("page") Integer page){
+        //分页处理
+        Integer pageIndex = (page - 1) * 1000;
+        Integer pageSize = 1000;
+
+        List<Map> fenceOnMapAll = publisherService.getUnicomHeaderFenceOnMapAll(dateStart,dateEnd,pageIndex,pageSize);
         ArrayList<Map> totalList = new ArrayList<>();
         Iterator<Map> iterator = fenceOnMapAll.iterator();
 

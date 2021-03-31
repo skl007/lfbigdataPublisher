@@ -75,7 +75,7 @@ public interface PublisherService {
      * @param dateEnd
      * @return
      */
-    public List<Map> getUnicomHeaderFenceMapDistinct(String dateStart,String dateEnd);
+    public List<Map> getUnicomHeaderFenceMapDistinct(String dateStart,String dateEnd,Integer pageIndex,Integer pageSize);
 
     /**
      * 利用人员轨迹模拟电子围栏：查询某一时间范围，围栏内部和围栏外部白名单所有人员的数据(不去重)
@@ -91,7 +91,7 @@ public interface PublisherService {
      * @param dateEnd
      * @return
      */
-    public List<Map> getUnicomHeaderFenceOnMapAll(String dateStart,String dateEnd);
+    public List<Map> getUnicomHeaderFenceOnMapAll(String dateStart,String dateEnd,Integer pageIndex,Integer pageSize);
 
 
 }
