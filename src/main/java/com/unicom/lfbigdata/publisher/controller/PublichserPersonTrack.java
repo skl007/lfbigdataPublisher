@@ -15,6 +15,7 @@ public class PublichserPersonTrack {
 
     @Autowired
     PublisherService publisherService;
+
     /**
      * 联通总部数据支撑的人员轨迹接口：查询某一时间范围，某一手机号，对应的人员轨迹信息(不去重)
      * @param dateStart
@@ -70,12 +71,8 @@ public class PublichserPersonTrack {
      * @return
      */
     @GetMapping("bigdata/unicom-header/fence-on-map/distinct")
-    public String getUnicomHeaderFenceMapDistinct(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd, @RequestParam("page") Integer page){
-        //分页处理
-        Integer pageIndex = (page - 1) * 1000;
-        Integer pageSize = 1000;
-
-        List<Map> fenceOnMapDistinct = publisherService.getUnicomHeaderFenceMapDistinct(dateStart,dateEnd,pageIndex,pageSize);
+    public String getUnicomHeaderFenceMapDistinct(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd){
+        List<Map> fenceOnMapDistinct = publisherService.getUnicomHeaderFenceMapDistinct(dateStart,dateEnd);
         ArrayList<Map> totalList = new ArrayList<>();
         Iterator<Map> iterator = fenceOnMapDistinct.iterator();
 
@@ -125,12 +122,8 @@ public class PublichserPersonTrack {
      * @return
      */
     @GetMapping("bigdata/unicom-header/fence-on-map/all")
-    public String getUnicomHeaderFenceMapAll(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd, @RequestParam("page") Integer page){
-        //分页处理
-        Integer pageIndex = (page - 1) * 1000;
-        Integer pageSize = 1000;
-
-        List<Map> fenceOnMapAll = publisherService.getUnicomHeaderFenceOnMapAll(dateStart,dateEnd,pageIndex,pageSize);
+    public String getUnicomHeaderFenceMapAll(@RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd){
+        List<Map> fenceOnMapAll = publisherService.getUnicomHeaderFenceOnMapAll(dateStart,dateEnd);
         ArrayList<Map> totalList = new ArrayList<>();
         Iterator<Map> iterator = fenceOnMapAll.iterator();
 
